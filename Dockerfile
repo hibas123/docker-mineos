@@ -6,6 +6,8 @@ RUN apt-get update; \
     echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list; \
     apt-get -y install supervisor screen python-cherrypy3 rdiff-backup git;\
     apt-get -y install openssh-server uuid pwgen
+
+RUN less /etc/apt/sources.list
     
 RUN apt-get -t jessie-backports install openjdk-8-jre-headless;
 
