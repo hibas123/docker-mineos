@@ -9,7 +9,7 @@ RUN apt-get update; \
 
 RUN less /etc/apt/sources.list
     
-RUN apt-get update; apt-get -t jessie-backports install openjdk-8-jre-headless;
+RUN apt-get update; apt-get -t -y jessie-backports install openjdk-8-jre-headless;
 
 # Installing MineOS scripts
 RUN mkdir -p /usr/games /var/games/minecraft; \
