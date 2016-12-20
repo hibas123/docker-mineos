@@ -4,7 +4,7 @@ MAINTAINER Yuji ODA
 # Installing Dependencies
 RUN apt-get update; \
     echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list; \
-    apt-get -y install supervisor screen python-cherrypy3 rdiff-backup git;\
+    apt-get -y install supervisor screen python-cherrypy3 rdiff-backup sudo git;\
     apt-get -y install openssh-server uuid pwgen apt-utils
 
 RUN less /etc/apt/sources.list
