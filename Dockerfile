@@ -7,8 +7,10 @@ RUN apt-get update; \
     apt-get -y install software-properties-common apt-utils; \
     add-apt-repository 'deb http://ftp.debian.org/debian jessie-backports main;' \
     apt-get update; \
-    apt-get -y install supervisor screen python-cherrypy3 rdiff-backup git openjdk-8-jre-headless;\
+    apt-get -y install supervisor screen python-cherrypy3 rdiff-backup git;\
     apt-get -y install openssh-server uuid pwgen
+    
+RUN apt-get -t jessie-backports install openjdk-8-jre-headless;
 
 # Installing MineOS scripts
 RUN mkdir -p /usr/games /var/games/minecraft; \
