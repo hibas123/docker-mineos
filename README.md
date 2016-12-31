@@ -1,43 +1,28 @@
-# minecraft-mineos
+# mineos-docker
+Dockerfiles for MineOS Images
 
-Dockerfile for creating Mine OS server image.
+Docker instances must be opened
 
-[Mine OS - easy minecraft hosting solution](http://minecraft.codeemo.com/)
+* USER_NAME=mc (optional)
+* USER_PASSWORD=mypass (required)
+* ACCEPT_ORACLE_LICENSE= (required for CRUX image only)
 
-## Usage
+CRUX:
 
-    docker run -d yujiod/minecraft-mineos
-    docker run -d -p 8443:8443 -p 25565:25565 yujiod/minecraft-mineos
+    docker run -itd -p 8443:8443 -p 25565:25565 -e USER_PASSWORD=mypass -e ACCEPT_ORACLE_LICENSE=true -v /var/games/minecraft:/var/games/minecraft hexparrot/mineos:node-crux
 
-The WebUI on 8443 port with self signed SSL. When binding to 8443, open below URL.
+Debian "Jessie":
 
-http://<hostname>:8443/
+    docker run -itd -p 8443:8443 -p 25565:25565 -e USER_PASSWORD=mypass -v /var/games/minecraft:/var/games/minecraft hexparrot/mineos:node-jessie
 
-Login username is `minecraft`. Password is auto genereated. Please check password in logs.
+Ubuntu "Vivid":
 
-    docker logs <container_id>
+    docker run -itd -p 8443:8443 -p 25565:25565 -e USER_PASSWORD=mypass -v /var/games/minecraft:/var/games/minecraft hexparrot/mineos:node-vivid
 
-You can also specify a password on run the container. The environment variable is `PASSWORD`.
+Ubuntu "Wily":
 
-    docker run -d -e PASSWORD=cr33p3r yujiod/minecraft-mineos
+    docker run -itd -p 8443:8443 -p 25565:25565 -e USER_PASSWORD=mypass -v /var/games/minecraft:/var/games/minecraft hexparrot/mineos:node-wily
 
-## SSH Access
+Full Format Example
 
-The server can access to SSH by `minecraft` user, port 22.
-
-    docker run -d -e PASSWORD=cr33p3r -p 2222:22 -p 8443:8443 -p 25565:25565 yujiod/minecraft-mineos
-    ssh minecraft@<hostname> -p 2222
-
-The password is automatically generated, or you specified in the container startup.
-
-### Mount minecraft data volume
-
-The mount point is `/var/games/minecraft`.
-
-    docker run -d -v /var/games/minecraft yujiod/minecraft-mineos 
-
-### Multiple minecraft server port binding
-
-    docker run -d -e PASSWORD=cr33p3r -v /var/games/minecraft -p 2222:22 -p 8443:443 \
-    -p 25565:25565 -p 25566:25566 -p 25567:25567 -p 25568:25568 -p 25569:25569 -p 25570:25570 \
-    yujiod/minecraft-mineos 
+    docker run -itd -p 8443:8443 -p 25565:25565 -e USER_NAME=will -e USER_PASSWORD=pass123 -e ACCEPT_ORACLE_LICENSE=true -v /var/games/minecraft:/var/games/minecraft hexparrot/mineos:node-crux
