@@ -1,25 +1,23 @@
-FROM debian:jessie
+FROM debian:stretch
 MAINTAINER William Dizon <wdchromium@gmail.com>
-
-#add testing repository for OpenJDK8
-RUN echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list
 
 #update and accept all prompts
 RUN apt-get update && apt-get install -y \
   supervisor \
   rdiff-backup \
   screen \
-  openjdk-8-jre-headless \
   rsync \
   git \
   curl \
   rlwrap \
+  default-jre-headless \
+  ca-certificates-java \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #install node from nodesource
-RUN curl https://deb.nodesource.com/node_4.x/pool/main/n/nodejs/nodejs_4.6.2-1nodesource1~jessie1_amd64.deb > node.deb \
- && dpkg -i node.deb \
- && rm node.deb
+RUN curl https://deb.nodesource.com/node_8.x/pool/main/n/nodejs/nodejs_8.9.4-1nodesource1_amd64.deb > node.deb \
+  && dpkg -i node.deb \
+  && rm node.deb
 
 #download mineos from github
 RUN mkdir /usr/games/minecraft \
@@ -44,8 +42,6 @@ CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
 #entrypoint allowing for setting of mc password
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh;\
-    chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8443 25565-25570
