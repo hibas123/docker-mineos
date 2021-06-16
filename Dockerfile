@@ -1,5 +1,10 @@
-FROM debian:stretch
-MAINTAINER William Dizon <wdchromium@gmail.com>
+FROM debian:bullseye
+
+# RUN echo "deb http://ppa.launchpad.net/linuxuprising/java/ubuntu impish main" > /etc/apt/sources.list.d/linuxuprising-ubuntu-java-impish.list
+
+# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv EA8CACC073C3DB2A
+
+RUN echo "\ndeb http://deb.debian.org/debian unstable main" >> /etc/apt/sources.list
 
 #update and accept all prompts
 RUN apt-get update && apt-get install -y \
@@ -10,31 +15,33 @@ RUN apt-get update && apt-get install -y \
   git \
   curl \
   rlwrap \
-  default-jre-headless \
+  openjdk-16-jre-headless \
   ca-certificates-java \
+  build-essential \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#install node from nodesource
-RUN curl https://deb.nodesource.com/node_8.x/pool/main/n/nodejs/nodejs_8.9.4-1nodesource1_amd64.deb > node.deb \
-  && dpkg -i node.deb \
-  && rm node.deb
+RUN curl https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.gz -o /tmp/node.tar.gz
+
+RUN mkdir -p /usr/nodejs && cd /usr/nodejs && tar -xf /tmp/node.tar.gz
+
+RUN ln -s /usr/nodejs/node-v8.9.4-linux-x64/bin/node /usr/bin/node
+RUN ln -s /usr/nodejs/node-v8.9.4-linux-x64/bin/npm /usr/bin/npm
+RUN ln -s /usr/nodejs/node-v8.9.4-linux-x64/bin/npx /usr/bin/npx
+
+RUN npm i -g npm@6
 
 #download mineos from github
 RUN mkdir /usr/games/minecraft \
   && cd /usr/games/minecraft \
-  && git clone --depth=1 https://github.com/hexparrot/mineos-node.git . \
+  && git clone --depth=1 https://github.com/hexparrot/mineos-node.git -b 1.3.0 . \
   && cp mineos.conf /etc/mineos.conf \
   && chmod +x webui.js mineos_console.js service.js
 
+WORKDIR /usr/games/minecraft
+
+RUN npm config set unsafe-perm true
 #build npm deps and clean up apt for image minimalization
-RUN cd /usr/games/minecraft \
-  && apt-get update \
-  && apt-get install -y build-essential \
-  && npm install \
-  && apt-get remove --purge -y build-essential \
-  && apt-get autoremove -y \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN chmod 777 -R /usr/games/minecraft && chmod 777 -R /root && npm install
 
 #configure and run supervisor
 RUN cp /usr/games/minecraft/init/supervisor_conf /etc/supervisor/conf.d/mineos.conf
