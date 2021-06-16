@@ -1,9 +1,5 @@
 FROM debian:bullseye
 
-# RUN echo "deb http://ppa.launchpad.net/linuxuprising/java/ubuntu impish main" > /etc/apt/sources.list.d/linuxuprising-ubuntu-java-impish.list
-
-# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv EA8CACC073C3DB2A
-
 RUN echo "\ndeb http://deb.debian.org/debian unstable main" >> /etc/apt/sources.list
 
 #update and accept all prompts
@@ -44,8 +40,10 @@ RUN npm config set unsafe-perm true
 RUN chmod 777 -R /usr/games/minecraft && chmod 777 -R /root && npm install
 
 #configure and run supervisor
-RUN cp /usr/games/minecraft/init/supervisor_conf /etc/supervisor/conf.d/mineos.conf
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
+# RUN cp /usr/games/minecraft/init/supervisor_conf /etc/supervisor/conf.d/mineos.conf
+WORKDIR /usr/games/minecraft
+CMD ["node", "webui.js"]
+# CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
 #entrypoint allowing for setting of mc password
 COPY entrypoint.sh /entrypoint.sh
